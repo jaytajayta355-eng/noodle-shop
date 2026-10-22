@@ -1,8 +1,11 @@
 import { demoApi } from './demoApi'
-// No backend exists yet, so the demo store is on unless a build sets VITE_DEMO=false.
-export const demoMode = import.meta.env.VITE_DEMO !== 'false'
+// Supabase when it is configured; otherwise the in-browser demo store, unless VITE_DEMO=false selects a same-origin server.
+export const backend = import.meta.env.VITE_SUPABASE_URL ? 'supabase' : import.meta.env.VITE_DEMO === 'false' ? 'server' : 'demo'
+export const demoMode = backend === 'demo'
 export async function api(path, options = {}) {
   if (demoMode) return demoApi(path, options)
+  // Loaded on demand so demo builds don't ship the Supabase client.
+  if (backend === 'supabase') return (await import('./supabaseApi')).supabaseApi(path, options)
   let response
   try {
     response = await fetch(path, { credentials: 'same-origin', signal: AbortSignal.timeout(15000), ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers } })

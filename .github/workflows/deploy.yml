@@ -30,6 +30,10 @@ jobs:
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
+          # Repository variables (Settings → Secrets and variables → Actions → Variables).
+          # Leave them unset to publish the in-browser demo instead.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
       # Pages has no SPA fallback, so /<repo>/admin is served through 404.html.
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
