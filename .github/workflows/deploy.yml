@@ -30,10 +30,17 @@ jobs:
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
-          # Repository variables (Settings → Secrets and variables → Actions → Variables).
+          # Settings → Secrets and variables → Actions (as Variables or Secrets).
           # Leave them unset to publish the in-browser demo instead.
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
+      # Say which backend was built in, so a missing setting is visible on the run page.
+      - run: |
+          if [ -n "$HAS_URL" ] && [ -n "$HAS_KEY" ]; then echo "### Backend: Supabase ✅" >> "$GITHUB_STEP_SUMMARY"
+          else echo "### Backend: DEMO (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY not set) ⚠️" >> "$GITHUB_STEP_SUMMARY"; echo "::warning::Built in demo mode: Supabase settings are missing"; fi
+        env:
+          HAS_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+          HAS_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
       # Pages has no SPA fallback, so /<repo>/admin is served through 404.html.
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
