@@ -1,0 +1,7 @@
+@font-face { font-family: "Noto Thai"; src: url('/fonts/noto-thai-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Thai"; src: url('/fonts/noto-thai-700.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+* { box-sizing: border-box; }
+:root { font-family: "Noto Thai", Tahoma, "Segoe UI", sans-serif; color: #38271e; background: #fff8ed; font-synthesis: none; line-height: 1.6; }
+body { margin: 0; }
+button, input, select { font: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #dc8c22; outline-offset: 3px; }
